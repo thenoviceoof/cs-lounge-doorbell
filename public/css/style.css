@@ -27,6 +27,7 @@ header a:visited {
 }
 
 #ringer {
+    display:none;
     width:300px;
     height:300px;
     margin:25px;
