@@ -1,4 +1,6 @@
 require 'sinatra'
+require 'json'
+
 require 'net/http'
 require 'uri'
 require 'hpricot'
@@ -6,9 +8,8 @@ require 'date'
 
 require 'config'
 
-get '/' do
+def get_events
   # get the events
-  # get events today
   feed_uri = URI.parse(Config::FEED_URL)
   feed_uri.query = [feed_uri.query, "futureevents=true"].compact.join("&")
   data = Net::HTTP.get(feed_uri.host, feed_uri.path)
@@ -32,7 +33,10 @@ get '/' do
     # and stick on the end
     events << event
   end
+  return events
+end
 
+def current_events events
   # check if we match the criteria
   current = events.find_all do |event|
     # critera for putting up a doorbell
@@ -40,11 +44,31 @@ get '/' do
       DateTime.now < event[:end] and
       /lounge/.match(event[:where].downcase)
   end
+  return current
+end
 
-  # 
+################################################################################
+
+get '/' do
+  # serve up an index.html
+  erb :index
+end
+
+# AJAX endpoint, return JSON
+# {current=? , upcoming=[]}
+get '/check' do
+  events = get_events
+  current = current_events events  
+
   if current then
-    return "Event RIGHT NOW"
+    return {:current => current[0], :upcoming => [] }.to_json
   end
 
-  return "No event right now"
+  return {:current => nil, :upcoming => [] }.to_json
+end
+
+# AJAX endpoint
+get '/ring' do
+  # rate limit
+  # push out to twilio
 end
