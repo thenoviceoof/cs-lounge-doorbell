@@ -6,6 +6,8 @@ require 'uri'
 require 'hpricot'
 require 'date'
 
+require 'twilio-ruby'
+
 require 'config'
 
 def get_events
@@ -56,19 +58,28 @@ end
 
 # AJAX endpoint, return JSON
 # {current=? , upcoming=[]}
-get '/check' do
+get '/events' do
   events = get_events
-  current = current_events events
 
-  if current then
-    return {:current => current[0], :upcoming => [] }.to_json
-  end
-
-  return {:current => nil, :upcoming => [] }.to_json
+  return {:events => events}.to_json
 end
 
 # AJAX endpoint
 get '/ring' do
   # rate limit
-  # push out to twilio
+  # check if it's actually an event
+  events = get_events
+  current = current_events events
+
+  if current then
+    # push out to twilio
+
+    # set up a client to talk to the Twilio REST API
+    @client = Twilio::REST::Client.new(Config::TWILIO_SID,
+                                       Config::TWILIO_AUTH_TOKEN)
+    # and send the sms
+    @client.account.sms.messages.create(:from => '+14159341234',
+                                        :to => '+16105557069',
+                                        :body => Config::MESSAGE)
+  end
 end
