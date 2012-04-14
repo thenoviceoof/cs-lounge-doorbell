@@ -51,14 +51,14 @@ end
 
 get '/' do
   # serve up an index.html
-  erb :index
+  redirect "/doorbell.html"
 end
 
 # AJAX endpoint, return JSON
 # {current=? , upcoming=[]}
 get '/check' do
   events = get_events
-  current = current_events events  
+  current = current_events events
 
   if current then
     return {:current => current[0], :upcoming => [] }.to_json

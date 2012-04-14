@@ -1,0 +1,83 @@
+html {
+    width:100%;
+    height:100%;
+}
+
+body {
+    width:800px;
+    height:100%;
+    margin:0 auto;
+    text-align:center;
+}
+
+header {
+    padding-top:0.5em;
+    font:bold 72pt sans-serif;
+}
+
+header a {
+    color:black;
+}
+header a:visited {
+    color:gray;
+}
+
+/*************************************************************/
+#main {
+}
+
+#ringer {
+    width:300px;
+    height:300px;
+    margin:25px;
+    cursor:pointer;
+    font:bold 22pt sans-serif;
+    background: -webkit-gradient(linear, left top, left bottom,
+                                 from(#FFF), to(#888));
+    background: -moz-linear-gradient(top,  #FFF,  #888);
+    border-radius:150px;
+    border:2px gray solid;
+}
+#ringer:active {
+    background: -webkit-gradient(linear, left top, left bottom,
+                                 from(#AAA), to(#CCC));
+    background: -moz-linear-gradient(top,  #AAA,  #CCC);
+}
+
+#upcoming-cont {
+    width:500px;
+    margin:0 auto;
+    text-align:center;
+}
+#upcoming-header {
+    margin:0;
+    padding:0.5em;
+    background-color:#CFC;
+    text-align:left;
+    border-top:4px black solid;
+}
+#upcoming {
+    margin-top:0;
+    margin-left:0;
+    padding-left:0;
+    list-style:none;
+    font:16pt sans-serif;
+    border-top:2px black solid;
+    border-bottom:2px black solid;
+}
+#upcoming li {
+    display:block;
+    padding:0.5em;
+    text-align:left;
+}
+#upcoming li:nth-child(odd) {
+    background-color:#DDF;
+}
+#upcoming li:nth-child(even) {
+    background-color:#DFD;
+}
+#upcoming time {
+    float:right;
+    padding:0.1em 0.5em;
+    background-color:#CCC;
+}
