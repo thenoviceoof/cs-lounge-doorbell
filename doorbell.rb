@@ -7,57 +7,44 @@ require 'date'
 require 'config'
 
 get '/' do
-  # get our current time
-  t = Time.now.utc
-
   # get the events
+  # get events today
   feed_uri = URI.parse(Config::FEED_URL)
+  feed_uri.query = [feed_uri.query, "futureevents=true"].compact.join("&")
   data = Net::HTTP.get(feed_uri.host, feed_uri.path)
   # parse up the XML
   doc =  Hpricot::XML(data)
-  # go through each event, see if we're 
-  current_events = []
+  events = []
   (doc/:entry).each do |entry|
     # get the event details
     event = {}
-    (entry/"summary").inner_html.split("&lt;br&gt;").each do |s|
-      s = s.strip
-      if s
-        key, *vals = s.split(":")
-        if key
-          key = key.downcase.sub(/\s/, '_')
-          val = vals.join(":").strip
-          event[key.intern] = val
-        end
-      end
+    event[:title] = (entry/"title")[0].inner_html
+    event[:begin] = (entry/"gd:when")[0][:startTime]
+    event[:end]   = (entry/"gd:when")[0][:endTime]
+    event[:where] = (entry/"gd:where")[0][:valueString]
+    # sanity check
+    if not event[:begin] or not event[:end] then
+      next
     end
     # check the timing
-    if (not event[:when]) then
-      next
-    end
-    event[:when] = event[:when].sub("&amp;nbsp;\n", " ")
-    event_when = event[:when].split(" ")
-    event_b = event_when[1..4].join(" ").sub(/[.,]/,"")
-    p event_b
-    event[:begin] = DateTime.strptime(event_b, "%b %d %Y %I:%M%p")
-    if event_when.length == 11 then
-      # time to time over multiple days
-      # time to time within a day
-      # figure out the times
-      event_e = (event_when[1..3] + event_when[6..6]).join(" ").sub(/[.,]/,"")
-      event[:end] = DateTime.strptime(event_e, "%b %d %Y %I:%M%p")
-    elsif event_when.length == 7
-      # time to time within a day
-      # figure out the times
-      event_e = event_when[7..10].join(" ").sub(/[.,]/,"")
-      event[:end] = DateTime.strptime(event_e, "%b %d %Y %I:%M%p")
-    else
-      # not interested in all day events
-      next
-    end
-    # get the title
-    event[:title] = (entry/"title").inner_html
-    p event
+    event[:begin] = DateTime.strptime(event[:begin], "%Y-%m-%dT%H:%M:%S.000%z")
+    event[:end]   = DateTime.strptime(event[:end], "%Y-%m-%dT%H:%M:%S.000%z")
+    # and stick on the end
+    events << event
   end
-  "hello"
+
+  # check if we match the criteria
+  current = events.find_all do |event|
+    # critera for putting up a doorbell
+    event[:begin] < DateTime.now and
+      DateTime.now < event[:end] and
+      /lounge/.match(event[:where].downcase)
+  end
+
+  # 
+  if current then
+    return "Event RIGHT NOW"
+  end
+
+  return "No event right now"
 end
