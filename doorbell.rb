@@ -25,6 +25,7 @@ def get_events
     event[:begin] = (entry/"gd:when")[0][:startTime]
     event[:end]   = (entry/"gd:when")[0][:endTime]
     event[:where] = (entry/"gd:where")[0][:valueString]
+    event[:who] = ((entry/"author")/"email")[0].inner_html
     # sanity check
     if not event[:begin] or not event[:end] then
       next
@@ -57,7 +58,6 @@ get '/' do
 end
 
 # AJAX endpoint, return JSON
-# {current=? , upcoming=[]}
 get '/events' do
   events = get_events
 
@@ -72,14 +72,22 @@ get '/ring' do
   current = current_events events
 
   if current then
+    number = Config::TWILIO_TARGET[current[:who]]
+    if number == nil then
+      return {:ring => false, :current => true}.to_json
+    end
     # push out to twilio
+    # !!!
 
     # set up a client to talk to the Twilio REST API
     @client = Twilio::REST::Client.new(Config::TWILIO_SID,
                                        Config::TWILIO_AUTH_TOKEN)
     # and send the sms
-    @client.account.sms.messages.create(:from => '+14159341234',
-                                        :to => '+16105557069',
+    @client.account.sms.messages.create(:from => Config::TWILIO_NUMBER,
+                                        :to => number
                                         :body => Config::MESSAGE)
+    return {:ring => true, :current => true}.to_json
+  else
+    return {:ring => false, :current => false}.to_json
   end
 end
