@@ -104,26 +104,26 @@ get '/ring' do
   # check if it's actually an event
   events = get_events
   current = (current_events events)[0]
+  number = nil
   if current then
     number = Config::TWILIO_TARGET[current[:who]]
-    # make sure there's a mapping
-    if number == nil then
-      return {:ring => false, :current => true}.to_json
-    end
+  end
 
-    # # push out to twilio
-    # # set up a client to talk to the Twilio REST API
-    # @client = Twilio::REST::Client.new(Config::TWILIO_SID,
-    #                                    Config::TWILIO_AUTH_TOKEN)
-    # # and send the sms
-    # @client.account.sms.messages.create(:from => Config::TWILIO_NUMBER,
-    #                                     :to => number
-    #                                     :body => Config::MESSAGE)
+  if current and number then
+    print "PUSHING TO TWILIO\n"
+    # push out to twilio
+    # set up a client to talk to the Twilio REST API
+    client = Twilio::REST::Client.new(Config::TWILIO_SID,
+                                      Config::TWILIO_AUTH_TOKEN)
+    # and send the sms
+    client.account.sms.messages.create(:from => Config::TWILIO_NUMBER,
+                                       :to => number,
+                                       :body => Config::MESSAGE)
 
-    # make sure it worked
-    # ???
-    return {:ring => true, :current => true}.to_json
+    {:ring => true, :current => true}.to_json.to_s
+  elsif current # but no number
+    {:ring => false, :current => true}.to_json.to_s
   else
-    return {:ring => false, :current => false}.to_json
+    {:ring => false, :current => false}.to_json.to_s
   end
 end
