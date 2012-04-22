@@ -96,14 +96,7 @@ get '/' do
     end
   end
   erb :doorbell, :locals => {:current => current, :events => events}
-  # redirect "/doorbell.html"
 end
-
-# AJAX endpoint, return JSON
-# get '/events' do
-#   events = get_events
-#   return {:events => events}.to_json
-# end
 
 # AJAX endpoint
 get '/ring' do
