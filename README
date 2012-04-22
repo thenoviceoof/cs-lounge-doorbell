@@ -1,5 +1,31 @@
+README
 A virtual doorbell
+================================================================================
 
-Depends on:
-sinatra
-libxml-ruby
+ABOUT
+--------------------------------------------------------------------------------
+Some student spaces are inexplicably inaccessible, and making them
+accessible is time consuming/weird. Instead of handing out phone
+numbers, you can ring a virtual doorbell that will text the event
+organizer to let ey know you've been locked out.
+
+More of an excuse to get up to speed with sinatra and re-acquaint
+myself with ruby.
+
+Built for the CS Lounge at Columbia University.
+
+
+DEPENDS
+--------------------------------------------------------------------------------
+ - sinatra
+ - hpricot
+ - twilio-ruby
+
+
+CONFIGURE
+--------------------------------------------------------------------------------
+Take a look at the config.template.rb file: fill out the values, and
+run away.
+
+Follow the suggested heroku setup for ruby applications (04/2012) to
+deploy
