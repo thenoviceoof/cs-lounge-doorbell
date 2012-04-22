@@ -71,6 +71,12 @@ header a:visited {
     padding:0.5em;
     text-align:left;
 }
+#upcoming li a {
+    color:black;
+}
+#upcoming li a:active {
+    color:black;
+}
 #upcoming li:nth-child(odd) {
     background-color:#DDF;
 }

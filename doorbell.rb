@@ -29,7 +29,7 @@ def get_events
     time = (entry/"gd:when")[0]
     location = (entry/"gd:where")[0]
     email = ((entry/"author")/"email")[0]
-    # !!! get the url
+    url = (entry/"link[@type=text/html]")[0]
     # element sanity check
     if not(title and time and location and email)
       next
@@ -41,6 +41,7 @@ def get_events
     event[:end]   = time[:endTime]
     event[:where] = location[:valueString]
     event[:who]   = email.inner_html
+    event[:url]   = url[:href]
     # another sanity check
     if not event[:begin] or not event[:end] then
       next

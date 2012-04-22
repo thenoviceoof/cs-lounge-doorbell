@@ -35,7 +35,13 @@
       <ul id="upcoming">
         <% for event in events do %>
           <li>
+            <% if event[:url] %>
+            <a href="<%= event[:url] %>">
+              <%= event[:title] %>
+            </a>
+            <% else %>
             <%= event[:title] %>
+            <% end %>
             <time><%= print_time event[:begin] %></time>
           </li>
         <% end %>
