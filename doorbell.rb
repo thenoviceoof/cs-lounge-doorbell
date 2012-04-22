@@ -8,6 +8,10 @@ require 'date'
 
 require 'twilio-ruby'
 
+# to get the config to work with heroku
+require 'pathname'
+cdir = File.dirname(Pathname.new(File.expand_path(__FILE__)).realpath.to_s).to_s
+$LOAD_PATH << cdir
 require 'config'
 
 def get_events
