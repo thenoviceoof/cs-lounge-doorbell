@@ -5,5 +5,7 @@
  */
 
 $(document).ready(function(){
-    $.ajax();
+    $("#ringer").click(function(e) {
+        $.get("/ring");
+    });
 });

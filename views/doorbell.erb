@@ -15,13 +15,28 @@
   </header>
 
   <div id="main">
+    <% if current then %>
     <button id="ringer"><!-- Event name here --></button>
+    <% else %>
+
+    Sorry, nothing is happening in the CS Lounge right now! You should
+    check out our future events, though.
+
+    <% end %>
 
     <div id="upcoming-cont">
       <h2 id="upcoming-header">Upcoming Events:</h2>
       <ul id="upcoming">
+        <% for event in events do %>
+          <li><%= event[:title] %> <time><%= print_time event[:begin] %></time></li>
         <!--<li>Upcoming event <time>Date</time></li>-->
+        <% end %>
       </ul>
+      <div>
+        Want more? Check out <a href="http://adicu.com/">adicu.com</a>
+        and <a href="http://eepurl.com/jaugD">sign up for our mailing
+        list</a>!
+      </div>
     </div>
   </div>
 
