@@ -15,20 +15,29 @@
   </header>
 
   <div id="main">
-    <% if current then %>
-    <button id="ringer"><!-- Event name here --></button>
+    <% if current.nil? then %>
+    <h2>
+     Sorry, ADI isn't doing anything in the CS Lounge right now! You
+     should check out our future events, though:
+    </h2>
+    <% elsif current == false then %>
+    <h2>
+     There's an event going on, but we can't ring anyone inside! While
+     you're waiting for someone to randomly open the door, you should
+     check out our future events:
+    </h2>
     <% else %>
-
-    Sorry, nothing is happening in the CS Lounge right now! You should
-    check out our future events, though.
-
+    <button id="ringer"><%= current[:title] %></button>
     <% end %>
 
     <div id="upcoming-cont">
       <h2 id="upcoming-header">Upcoming Events:</h2>
       <ul id="upcoming">
         <% for event in events do %>
-          <li><%= event[:title] %> <time><%= print_time event[:begin] %></time></li>
+          <li>
+            <%= event[:title] %>
+            <time><%= print_time event[:begin] %></time>
+          </li>
         <!--<li>Upcoming event <time>Date</time></li>-->
         <% end %>
       </ul>

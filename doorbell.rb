@@ -24,7 +24,7 @@ def get_events
     title = (entry/"title")[0]
     time = (entry/"gd:when")[0]
     location = (entry/"gd:where")[0]
-    email = (entry/"author")/"email"[0]
+    email = ((entry/"author")/"email")[0]
     # !!! get the url
     # element sanity check
     if not(title and time and location and email)
@@ -54,9 +54,10 @@ def current_events events
   # check if we match the criteria
   current = events.find_all do |event|
     # critera for putting up a doorbell
-    event[:begin] < DateTime.now and
+    # put up the doorbell 15 minutes in advance
+    (event[:begin] - 15.0/1440) < DateTime.now and
       DateTime.now < event[:end] and
-      /lounge/.match(event[:where].downcase)
+      /lounge/.match(event[:where].downcase) != nil
   end
   return current
 end
@@ -82,9 +83,18 @@ end
 get '/' do
   # serve up an index.html
   events = get_events
+  current = (current_events events)[0]
+  # resort, exclude current
+  events = (Set.new(events) - Set.new([current])).to_a
   events.sort! { |a,b| a[:begin] <=> b[:begin] }
-  current = current_events events
-  print current
+  # check if there's someone to ring
+  if current
+    number = Config::TWILIO_TARGET[current[:who]]
+    # make sure there's a mapping
+    if number == nil then
+      current = false
+    end
+  end
   erb :doorbell, :locals => {:current => current, :events => events}
   # redirect "/doorbell.html"
 end
@@ -100,10 +110,7 @@ get '/ring' do
   # rate limit
   # check if it's actually an event
   events = get_events
-  current = current_events events
-  print events
-  print current
-
+  current = (current_events events)[0]
   if current then
     number = Config::TWILIO_TARGET[current[:who]]
     # make sure there's a mapping
