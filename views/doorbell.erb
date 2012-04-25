@@ -6,6 +6,7 @@
   <meta name="description" content="">
 
   <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -37,20 +38,21 @@
           <li>
             <% if event[:url] %>
             <a href="<%= event[:url] %>">
+            <% end %>
               <%= event[:title] %>
+            <% if event[:url] %>
             </a>
-            <% else %>
-            <%= event[:title] %>
             <% end %>
             <time><%= print_time event[:begin] %></time>
+            <div class="loc"><%= event[:where] %></div>
           </li>
         <% end %>
       </ul>
-      <div>
+      <footer>
         Want more? Check out <a href="http://adicu.com/">adicu.com</a>
         and <a href="http://eepurl.com/jaugD">sign up for our mailing
         list</a>!
-      </div>
+      </footer>
     </div>
   </div>
 

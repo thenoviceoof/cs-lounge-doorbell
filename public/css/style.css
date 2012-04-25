@@ -26,6 +26,10 @@ header a:visited {
 #main {
 }
 
+h2 {
+    font:bold 18pt serif;
+}
+
 #ringer {
     width:300px;
     height:300px;
@@ -85,6 +89,20 @@ header a:visited {
 }
 #upcoming time {
     float:right;
+    margin-top:0.25em;
     padding:0.1em 0.5em;
     background-color:#CCC;
+}
+#upcoming .loc {
+    color:#888;
+    font-size:12pt;
+}
+
+footer {
+}
+footer a {
+    color:black;
+}
+footer a:visited {
+    color:black;
 }
